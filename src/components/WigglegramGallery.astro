@@ -1,19 +1,32 @@
 ---
-const videos = Array.from({ length: 12 }, (_, i) => {
+interface Props {
+  folder: string;
+  prefix: string;
+  count: number;
+}
+
+const { folder, prefix, count } = Astro.props;
+
+const items = Array.from({ length: count }, (_, i) => {
   const number = String(i + 1).padStart(4, "0");
 
   return {
-    src: `/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-${number}.mp4`,
-    thumbnail: `/wigglegrams/20260716-campusfestival/thumbnails/${number}.jpg`
+    thumbnail: `/wigglegrams/${folder}/thumbnails/${number}.jpg`,
+    video: `/wigglegrams/${folder}/${prefix}${number}.mp4`,
   };
 });
 ---
 
 <div class="gallery">
-  {videos.map((video, index) => (
-    <button class="wiggle-card" data-video={video.src}>
-      <img 
-        src={video.thumbnail}
+  {items.map((item, index) => (
+    <button
+      class="thumbnail"
+      data-video={item.video}
+      data-index={index}
+      aria-label={`Wigglegram ${index + 1}`}
+    >
+      <img
+        src={item.thumbnail}
         alt={`Wigglegram ${index + 1}`}
         loading="lazy"
       />
@@ -23,36 +36,103 @@ const videos = Array.from({ length: 12 }, (_, i) => {
 
 
 <div class="viewer" id="viewer">
-  <button class="close" aria-label="Close">×</button>
+  <button class="close" aria-label="Schließen">
+    ×
+  </button>
 
-  <video 
+  <button class="prev" aria-label="Vorheriges Video">
+    ‹
+  </button>
+
+  <video
     id="player"
     autoplay
     loop
     muted
-    playsinline>
-  </video>
+    playsinline
+  ></video>
+
+  <button class="next" aria-label="Nächstes Video">
+    ›
+  </button>
 </div>
 
 
-<script>
+<script define:vars={{ items }}>
   const viewer = document.getElementById("viewer");
   const player = document.getElementById("player");
-  const cards = document.querySelectorAll(".wiggle-card");
+
+  const buttons = document.querySelectorAll(".thumbnail");
   const close = document.querySelector(".close");
+  const next = document.querySelector(".next");
+  const prev = document.querySelector(".prev");
 
-  cards.forEach(card => {
-    card.addEventListener("click", () => {
-      player.src = card.dataset.video;
-      viewer.classList.add("active");
-      player.play();
-    });
-  });
+  let current = 0;
 
-  close.addEventListener("click", () => {
+
+  function openVideo(index) {
+    current = index;
+    player.src = items[index].video;
+    viewer.classList.add("active");
+    player.play();
+  }
+
+
+  function closeViewer() {
     player.pause();
     player.src = "";
     viewer.classList.remove("active");
+  }
+
+
+  function changeVideo(direction) {
+    current += direction;
+
+    if (current < 0) {
+      current = items.length - 1;
+    }
+
+    if (current >= items.length) {
+      current = 0;
+    }
+
+    player.src = items[current].video;
+    player.play();
+  }
+
+
+  buttons.forEach(button => {
+    button.addEventListener("click", () => {
+      openVideo(Number(button.dataset.index));
+    });
+  });
+
+
+  close.addEventListener("click", closeViewer);
+
+  next.addEventListener("click", () => {
+    changeVideo(1);
+  });
+
+  prev.addEventListener("click", () => {
+    changeVideo(-1);
+  });
+
+
+  document.addEventListener("keydown", (event) => {
+    if (!viewer.classList.contains("active")) return;
+
+    if (event.key === "Escape") {
+      closeViewer();
+    }
+
+    if (event.key === "ArrowRight") {
+      changeVideo(1);
+    }
+
+    if (event.key === "ArrowLeft") {
+      changeVideo(-1);
+    }
   });
 </script>
 
@@ -64,29 +144,38 @@ const videos = Array.from({ length: 12 }, (_, i) => {
   gap: 1rem;
 }
 
-.wiggle-card {
-  border: none;
+
+.thumbnail {
   padding: 0;
+  border: 0;
   background: none;
   cursor: pointer;
 }
 
-.wiggle-card img {
+
+.thumbnail img {
+  display: block;
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: 12px;
+  transition: transform .2s ease;
+}
+
+
+.thumbnail:hover img {
+  transform: scale(1.03);
 }
 
 
 .viewer {
-  display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.85);
-  z-index: 1000;
-  justify-content: center;
+  background: rgba(0,0,0,.9);
+  display: none;
   align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 
 
@@ -96,19 +185,52 @@ const videos = Array.from({ length: 12 }, (_, i) => {
 
 
 .viewer video {
-  max-width: 95vw;
+  max-width: 90vw;
   max-height: 90vh;
 }
 
 
-.close {
+.close,
+.prev,
+.next {
   position: absolute;
-  top: 20px;
-  right: 30px;
-  font-size: 40px;
-  color: white;
   background: none;
   border: none;
+  color: white;
+  font-size: 3rem;
   cursor: pointer;
+}
+
+
+.close {
+  top: 20px;
+  right: 30px;
+}
+
+
+.prev {
+  left: 30px;
+}
+
+
+.next {
+  right: 30px;
+}
+
+
+@media (max-width: 600px) {
+
+  .gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .prev {
+    left: 10px;
+  }
+
+  .next {
+    right: 10px;
+  }
+
 }
 </style>
