@@ -1,0 +1,114 @@
+---
+const videos = Array.from({ length: 12 }, (_, i) => {
+  const number = String(i + 1).padStart(4, "0");
+
+  return {
+    src: `/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-${number}.mp4`,
+    thumbnail: `/wigglegrams/20260716-campusfestival/thumbnails/${number}.jpg`
+  };
+});
+---
+
+<div class="gallery">
+  {videos.map((video, index) => (
+    <button class="wiggle-card" data-video={video.src}>
+      <img 
+        src={video.thumbnail}
+        alt={`Wigglegram ${index + 1}`}
+        loading="lazy"
+      />
+    </button>
+  ))}
+</div>
+
+
+<div class="viewer" id="viewer">
+  <button class="close" aria-label="Close">×</button>
+
+  <video 
+    id="player"
+    autoplay
+    loop
+    muted
+    playsinline>
+  </video>
+</div>
+
+
+<script>
+  const viewer = document.getElementById("viewer");
+  const player = document.getElementById("player");
+  const cards = document.querySelectorAll(".wiggle-card");
+  const close = document.querySelector(".close");
+
+  cards.forEach(card => {
+    card.addEventListener("click", () => {
+      player.src = card.dataset.video;
+      viewer.classList.add("active");
+      player.play();
+    });
+  });
+
+  close.addEventListener("click", () => {
+    player.pause();
+    player.src = "";
+    viewer.classList.remove("active");
+  });
+</script>
+
+
+<style>
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.wiggle-card {
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.wiggle-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+
+.viewer {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.85);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.viewer.active {
+  display: flex;
+}
+
+
+.viewer video {
+  max-width: 95vw;
+  max-height: 90vh;
+}
+
+
+.close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 40px;
+  color: white;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+</style>
