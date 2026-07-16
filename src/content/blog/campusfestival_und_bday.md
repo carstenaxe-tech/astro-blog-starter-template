@@ -16,51 +16,51 @@ Wigglegrams fangen Bewegung auf eine spielerische Art ein – zwischen Foto und 
 <div class="wigglegram-grid">
 
   <video autoplay loop muted playsinline>
-    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0001.mov">
+    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0001.mp4">
   </video>
 
   <video autoplay loop muted playsinline>
-    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0002.mov">
+    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0002.mp4">
   </video>
 
   <video autoplay loop muted playsinline>
-    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0003.mov">
+    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0003.mp4">
   </video>
 
   <video autoplay loop muted playsinline>
-    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0004.mov">
+    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0004.mp4">
   </video>
 
   <video autoplay loop muted playsinline>
-    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0005.mov">
+    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0005.mp4">
   </video>
 
   <video autoplay loop muted playsinline>
-    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0006.mov">
+    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0006.mp4">
   </video>
 
   <video autoplay loop muted playsinline>
-    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0007.mov">
+    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0007.mp4">
   </video>
 
   <video autoplay loop muted playsinline>
-    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0008.mov">
+    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0008.mp4">
   </video>
 
   <video autoplay loop muted playsinline>
-    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0009.mov">
+    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0009.mp4">
   </video>
 
   <video autoplay loop muted playsinline>
-    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0010.mov">
+    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0010.mp4">
   </video>
 
   <video autoplay loop muted playsinline>
-    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0011.mov">
+    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0011.mp4">
   </video>
 
   <video autoplay loop muted playsinline>
-    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0012.mov">
+    <source src="/wigglegrams/20260716-campusfestival/campusfestival_und_bday0000_V1-0012.mp4">
   </video>
 
 </div>
