@@ -2,7 +2,7 @@
 
 title: "Campusfestival & Birthday Wigglegrams"
 description: "Eine Sammlung von 12 Wigglegrams vom Campusfestival und einer Geburtstagsfeier."
-date: "2026-07-16"
+pubDate: "Jul 16 2026"
 ------------------
 
 # Campusfestival & Birthday Wigglegrams
