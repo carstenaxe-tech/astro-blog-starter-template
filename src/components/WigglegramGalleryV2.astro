@@ -135,15 +135,15 @@ const items = videoFiles.map((file, index) => ({
     gap: 1rem;
   }
 
-  .thumbnail {
-    display: block;
-    overflow: hidden;
-    padding: 0;
-    border: 0;
-    border-radius: 12px;
-    background: none;
-    cursor: pointer;
-  }
+  .thumbnail img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+  transform: rotate(var(--thumbnail-rotation, 0deg));
+}
 
   .thumbnail img {
     display: block;
