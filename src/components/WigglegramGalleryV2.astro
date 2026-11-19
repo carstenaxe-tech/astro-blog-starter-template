@@ -1,0 +1,240 @@
+---
+interface Props {
+  folder: string;
+  files?: string[];
+  rotations?: number[];
+  // Legacy support: allows existing posts to keep using prefix + count.
+  prefix?: string;
+  count?: number;
+}
+
+const {
+  folder,
+  files,
+  rotations = [],
+  prefix = "",
+  count = 0,
+} = Astro.props;
+
+const videoFiles =
+  files ?? Array.from({ length: count }, (_, i) => {
+    const number = String(i + 1).padStart(4, "0");
+    return `${prefix}${number}.mp4`;
+  });
+
+const items = videoFiles.map((file, index) => ({
+  thumbnail: `/wigglegrams/${folder}/thumbnails/${String(index + 1).padStart(4, "0")}.jpg`,
+  video: `/wigglegrams/${folder}/${file}`,
+  rotation: rotations[index] ?? 0,
+}));
+---
+
+<div class="gallery">
+  {items.map((item, index) => (
+    <button
+      class="thumbnail"
+      type="button"
+      data-index={index}
+      style={`--thumbnail-rotation: ${item.rotation}deg`}
+      aria-label={`Wigglegram ${index + 1} öffnen`}
+    >
+      <img
+        src={item.thumbnail}
+        alt={`Wigglegram ${index + 1}`}
+        loading="lazy"
+      />
+    </button>
+  ))}
+</div>
+
+<div class="viewer" id="wigglegram-viewer" aria-label="Wigglegram-Ansicht" aria-modal="true" role="dialog">
+  <button class="close" type="button" aria-label="Schließen">×</button>
+  <button class="prev" type="button" aria-label="Vorheriges Video">‹</button>
+
+  <video
+    id="wigglegram-player"
+    autoplay
+    loop
+    muted
+    playsinline
+  ></video>
+
+  <button class="next" type="button" aria-label="Nächstes Video">›</button>
+</div>
+
+<script define:vars={{ items }}>
+  const viewer = document.getElementById("wigglegram-viewer");
+  const player = document.getElementById("wigglegram-player");
+  const buttons = document.querySelectorAll(".thumbnail");
+  const closeButton = document.querySelector(".close");
+  const nextButton = document.querySelector(".next");
+  const prevButton = document.querySelector(".prev");
+
+  let current = 0;
+
+  function setVideo(index) {
+    current = index;
+    player.src = items[current].video;
+
+    const rotation = items[current].rotation || 0;
+    player.style.setProperty("--video-rotation", `${rotation}deg`);
+    player.classList.toggle("rotated", rotation % 180 !== 0);
+
+    player.load();
+    player.play().catch(() => {
+      // Autoplay kann je nach Browser-Einstellungen blockiert werden.
+    });
+  }
+
+  function openVideo(index) {
+    setVideo(index);
+    viewer.classList.add("active");
+    document.body.classList.add("wigglegram-open");
+  }
+
+  function closeViewer() {
+    player.pause();
+    player.removeAttribute("src");
+    player.load();
+    viewer.classList.remove("active");
+    document.body.classList.remove("wigglegram-open");
+  }
+
+  function changeVideo(direction) {
+    const nextIndex = (current + direction + items.length) % items.length;
+    setVideo(nextIndex);
+  }
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      openVideo(Number(button.dataset.index));
+    });
+  });
+
+  closeButton.addEventListener("click", closeViewer);
+  nextButton.addEventListener("click", () => changeVideo(1));
+  prevButton.addEventListener("click", () => changeVideo(-1));
+
+  viewer.addEventListener("click", (event) => {
+    if (event.target === viewer) closeViewer();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (!viewer.classList.contains("active")) return;
+
+    if (event.key === "Escape") closeViewer();
+    if (event.key === "ArrowRight") changeVideo(1);
+    if (event.key === "ArrowLeft") changeVideo(-1);
+  });
+</script>
+
+<style>
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+
+  .thumbnail {
+    display: block;
+    overflow: hidden;
+    padding: 0;
+    border: 0;
+    border-radius: 12px;
+    background: none;
+    cursor: pointer;
+  }
+
+  .thumbnail img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 12px;
+    transform: rotate(var(--thumbnail-rotation, 0deg));
+    transition: transform 0.2s ease;
+  }
+
+  .thumbnail:hover img {
+    transform: rotate(var(--thumbnail-rotation, 0deg)) scale(1.03);
+  }
+
+  .viewer {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.92);
+    z-index: 1000;
+  }
+
+  .viewer.active {
+    display: flex;
+  }
+
+  .viewer video {
+    display: block;
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    transform: rotate(var(--video-rotation, 0deg));
+  }
+
+  /* Bei 90°/270° wird das Querformatvideo innerhalb des Viewports gedreht. */
+  .viewer video.rotated {
+    width: min(90vh, 160vw);
+    max-width: none;
+    max-height: none;
+  }
+
+  .close,
+  .prev,
+  .next {
+    position: absolute;
+    z-index: 1;
+    padding: 0.25rem 0.75rem;
+    border: 0;
+    background: none;
+    color: white;
+    font-size: 3rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .close {
+    top: 20px;
+    right: 30px;
+  }
+
+  .prev {
+    left: 30px;
+  }
+
+  .next {
+    right: 30px;
+  }
+
+  @media (max-width: 600px) {
+    .gallery {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .close {
+      top: 10px;
+      right: 10px;
+    }
+
+    .prev {
+      left: 5px;
+    }
+
+    .next {
+      right: 5px;
+    }
+  }
+
+  :global(body.wigglegram-open) {
+    overflow: hidden;
+  }
+</style>
